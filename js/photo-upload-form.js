@@ -1,8 +1,10 @@
 import {body} from './open-fullsize-photos.js';
 import {isEscapeKey} from './utils.js';
 import {isDescriptionValid, MAX_DESCRIPTION_LENGTH, isHashtagValid, generateErrorMessage} from './form-validation.js';
+
 import {clearEffectPreview} from './effects-slider.js';
 import {clearScaleControl} from './photo-scale-control.js';
+
 
 const uploadForm = document.querySelector('.img-upload__form');
 
@@ -11,6 +13,7 @@ const photoEditorForm = uploadForm.querySelector ('.img-upload__overlay');
 const uploadFormClosingElement = uploadForm.querySelector('.img-upload__cancel');
 const hashtagsField = uploadForm.querySelector('.text__hashtags');
 const descriptionField = uploadForm.querySelector('.text__description');
+
 
 const onEscKeydown = (evt) => {
   if (isEscapeKey(evt)) {
@@ -29,6 +32,7 @@ function closePhotoEditor () {
   photoEditorForm.classList.add('hidden');
   body.classList.remove('modal-open');
 
+
   photoUploadControl.value = '';
   hashtagsField.value = '';
   descriptionField.value = '';
@@ -39,6 +43,12 @@ function closePhotoEditor () {
 
   document.removeEventListener('keydown', onEscKeydown);
   uploadFormClosingElement.removeEventListener('click', onUploadFormClosingClick);
+
+  document.removeEventListener('keydown', onEscKeydown);
+  uploadFormClosingElement.removeEventListener('click', onUploadFormClosingClick);
+  photoUploadControl.value = '';
+  hashtagsField.value = '';
+  descriptionField.value = '';
 }
 
 const onUploadFormClick = () => {
@@ -52,12 +62,16 @@ const openUploadForm = () => {
   photoUploadControl.addEventListener('change', onUploadFormClick);
 };
 
+
+openUploadForm();
+
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
   errorClass: 'img-upload__field-wrapper--error',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextTag: 'div',
 });
+
 
 pristine.addValidator(descriptionField, isDescriptionValid, `Длина комментария не должна превышать ${MAX_DESCRIPTION_LENGTH } симоволов`,);
 pristine.addValidator(hashtagsField, isHashtagValid, generateErrorMessage);
@@ -70,6 +84,9 @@ uploadForm.addEventListener('submit', (evt) => {
   }
 });
 
+
 openUploadForm();
 
 export {openUploadForm, hashtagsField, descriptionField};
+
+export {openUploadForm, uploadForm, hashtagsField, descriptionField};
