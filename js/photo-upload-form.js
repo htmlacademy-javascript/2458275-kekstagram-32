@@ -2,6 +2,10 @@ import {body} from './open-fullsize-photos.js';
 import {isEscapeKey} from './utils.js';
 import {isDescriptionValid, MAX_DESCRIPTION_LENGTH, isHashtagValid, generateErrorMessage} from './form-validation.js';
 
+import {clearEffectPreview} from './effects-slider.js';
+import {clearScaleControl} from './photo-scale-control.js';
+
+
 const uploadForm = document.querySelector('.img-upload__form');
 
 const photoUploadControl = uploadForm.querySelector('.img-upload__input');
@@ -27,6 +31,19 @@ const onUploadFormClosingClick = () => closePhotoEditor();
 function closePhotoEditor () {
   photoEditorForm.classList.add('hidden');
   body.classList.remove('modal-open');
+
+
+  photoUploadControl.value = '';
+  hashtagsField.value = '';
+  descriptionField.value = '';
+
+  uploadForm.reset();
+  clearEffectPreview();
+  clearScaleControl();
+
+  document.removeEventListener('keydown', onEscKeydown);
+  uploadFormClosingElement.removeEventListener('click', onUploadFormClosingClick);
+
   document.removeEventListener('keydown', onEscKeydown);
   uploadFormClosingElement.removeEventListener('click', onUploadFormClosingClick);
   photoUploadControl.value = '';
@@ -45,7 +62,9 @@ const openUploadForm = () => {
   photoUploadControl.addEventListener('change', onUploadFormClick);
 };
 
+
 openUploadForm();
+
 const pristine = new Pristine(uploadForm, {
   classTo: 'img-upload__field-wrapper',
   errorClass: 'img-upload__field-wrapper--error',
@@ -64,5 +83,10 @@ uploadForm.addEventListener('submit', (evt) => {
     evt.preventDefault();
   }
 });
+
+
+openUploadForm();
+
+export {openUploadForm, hashtagsField, descriptionField};
 
 export {openUploadForm, uploadForm, hashtagsField, descriptionField};
